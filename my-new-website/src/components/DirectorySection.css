@@ -1,0 +1,23 @@
+/* src/components/DirectorySection.css */
+
+.directory-section {
+    padding: 4rem 0;
+    background-color: #f0f2f5;
+  }
+  
+  .directory-section .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .directory-section h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .business-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }

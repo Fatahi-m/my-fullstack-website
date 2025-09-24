@@ -1,0 +1,23 @@
+/* src/components/NewsSection.css */
+
+.news-section {
+    padding: 4rem 0;
+    background-color: #f9f9f9;
+  }
+  
+  .news-section .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .news-section h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
