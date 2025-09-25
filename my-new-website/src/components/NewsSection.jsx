@@ -8,13 +8,17 @@ const NewsSection = () => {
   // استفاده از useState برای نگهداری داده‌های اخبار
   const [news, setNews] = useState([]);
 
+  // ⬅️ اینجا آدرس بک‌اند آنلاین Vercel شما تعریف می‌شود.
+  // لطفاً این آدرس را با آدرس دامنه اصلی Vercel خود جایگزین کنید!
+  const API_URL = 'https://my-app-backend-gamma.vercel.app'; 
+
   // استفاده از useEffect برای دریافت داده‌ها از API هنگام بارگذاری کامپوننت
   useEffect(() => {
     // تابع برای ارسال درخواست به بک‌اند
     const fetchNews = async () => {
       try {
-        // ارسال درخواست به آدرس API بک‌اند Flask
-        const response = await fetch('http://127.0.0.1:5000/api/news');
+        // ارسال درخواست به آدرس API بک‌اند آنلاین
+        const response = await fetch(`${API_URL}/api/news`);
         const data = await response.json();
         // ذخیره داده‌های دریافتی در وضعیت (state)
         setNews(data);

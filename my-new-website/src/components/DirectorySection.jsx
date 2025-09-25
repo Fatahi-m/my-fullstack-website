@@ -7,11 +7,15 @@ import './DirectorySection.css';
 const DirectorySection = () => {
   const [businesses, setBusinesses] = useState([]); // وضعیت (state) برای نگهداری داده‌های کسب‌وکار
 
+  // ⬅️ اینجا آدرس بک‌اند آنلاین Vercel شما تعریف می‌شود.
+  // لطفاً این آدرس را با آدرس دامنه اصلی Vercel خود جایگزین کنید!
+  const API_URL = 'https://my-app-backend-gamma.vercel.app'; 
+
   useEffect(() => {
     const fetchBusinesses = async () => {
       try {
-        // ارسال درخواست به آدرس API بک‌اند
-        const response = await fetch('http://127.0.0.1:5000/api/businesses');
+        // ارسال درخواست به آدرس API بک‌اند آنلاین
+        const response = await fetch(`${API_URL}/api/businesses`);
         const data = await response.json();
         setBusinesses(data); // ذخیره داده‌های دریافتی در وضعیت
       } catch (error) {
