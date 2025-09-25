@@ -1,10 +1,8 @@
-from flask import Flask, jsonify
-from flask_cors import CORS
+from http.server import BaseHTTPRequestHandler
+from urllib.parse import urlparse
+import json
 
-app = Flask(__name__)
-CORS(app)  # این خط برای رفع خطای CORS بسیار مهم است
-
-# داده‌های نمونه اخبار
+# داده‌های نمونه (بدون تغییر)
 news_data = [
     {
         "id": 1,
@@ -26,7 +24,6 @@ news_data = [
     }
 ]
 
-# داده‌های نمونه برای کسب‌وکارها
 businesses_data = [
     {
         "id": 1,
@@ -48,15 +45,26 @@ businesses_data = [
     }
 ]
 
-# نقطه دسترسی (endpoint) برای اخبار
-@app.route('/api/news')
-def get_news():
-    return jsonify(news_data)
+# ⬅️ تابع کمکی برای ارسال پاسخ JSON با هدر CORS
+def send_json_response(self, data):
+    self.send_response(200)
+    # ⬅️ هدر اصلی CORS که اجازه دسترسی به همه دامنه‌ها را می‌دهد
+    self.send_header('Access-Control-Allow-Origin', '*') 
+    self.send_header('Content-type', 'application/json')
+    self.end_headers()
+    self.wfile.write(json.dumps(data).encode('utf-8'))
 
-# نقطه دسترسی (endpoint) برای کسب‌وکارها
-@app.route('/api/businesses')
-def get_businesses():
-    return jsonify(businesses_data)
+# ⬅️ هندلر اصلی Vercel
+class handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        s = urlparse(self.path)
+        path = s.path
 
-if __name__ == '__main__':
-    app.run(debug=True)
+        if path == '/api/news':
+            send_json_response(self, news_data)
+        elif path == '/api/businesses':
+            send_json_response(self, businesses_data)
+        else:
+            self.send_response(404)
+            self.end_headers()
+            self.wfile.write(b"Not Found")
