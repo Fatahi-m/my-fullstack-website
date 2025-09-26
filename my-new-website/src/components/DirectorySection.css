@@ -21,3 +21,31 @@
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
   }
+  /* src/components/DirectorySection.css */
+
+/* ... (کدهای قبلی) ... */
+
+/* استایل‌دهی برای نوار جستجو */
+.directory-search-container {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.directory-search-container input {
+  padding: 12px 15px;
+  width: 80%;
+  max-width: 600px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.3s ease;
+  /* این خطوط برای سازگاری بهتر است */
+  box-sizing: border-box; 
+  direction: rtl; /* برای نمایش بهتر متن فارسی */
+}
+
+.directory-search-container input:focus {
+  border-color: #007bff;
+  outline: none;
+}
