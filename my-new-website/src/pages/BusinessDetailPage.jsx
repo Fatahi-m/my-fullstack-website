@@ -5,35 +5,26 @@ import { useParams, Link } from 'react-router-dom';
 import '../App.css'; 
 
 const BusinessDetailPage = () => {
-  // ⬅️ دریافت پارامتر businessId از آدرس URL
   const { businessId } = useParams(); 
   const [business, setBusiness] = useState(null);
   
-  // 🚨 آدرس بک‌اند آنلاین شما (لطفاً با آدرس دقیق خود جایگزین کنید)
+  // ⬅️ آدرس بک‌اند آنلاین خود را اینجا وارد کنید
   const API_URL = 'https://my-app-backend-gamma.vercel.app'; 
 
   useEffect(() => {
-    // ⬅️ در آینده، این تابع باید به endpoint /api/businesses/ID درخواست دهد.
-    
-    // شبیه‌سازی دریافت داده:
     const fetchBusinessDetail = async () => {
-      // برای نمایش سریع، از داده‌های شبیه‌سازی‌شده استفاده می‌کنیم:
-      const dummyData = {
-          id: businessId,
-          name: `کسب‌وکار شماره ${businessId}`,
-          category: 'خدمات فنی و مهندسی',
-          description: 'این توضیحات کامل و جامع کسب‌وکار است. اینجا تمام اطلاعات تماس، جزئیات خدمات، ساعات کاری و آدرس‌های شعبه‌های مختلف نمایش داده می‌شود. هدف این صفحه ارائه اطلاعات کامل به مشتریان است.',
-          contact: '۰۹۱۲-۱۰۰-۰۰۰۰',
-          address: 'تهران، خیابان ولیعصر، برج تجارت، طبقه ۱۲',
-      };
-      // تأخیر کوتاه برای شبیه‌سازی لودینگ شبکه
-      setTimeout(() => {
-          setBusiness(dummyData);
-      }, 500);
+      try {
+        const response = await fetch(`${API_URL}/api/businesses/${businessId}`); // ⬅️ درخواست به API جدید
+        if (!response.ok) {
+          throw new Error('Business not found!');
+        }
+        const data = await response.json();
+        setBusiness(data);
+      } catch (error) {
+        console.error('Error fetching business detail:', error);
+      }
     };
-
     fetchBusinessDetail();
-    
   }, [businessId]); 
 
 
