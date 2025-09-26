@@ -13,10 +13,20 @@ const NewsDetailPage = () => {
 
   useEffect(() => {
     const fetchNewsDetail = async () => {
+      // ⬅️ بررسی حیاتی: اگر newsId تعریف نشده باشد، درخواست ارسال نمی‌شود
+      if (!newsId) {
+        console.error("Error: newsId is undefined. Cannot fetch data.");
+        return; // خروج از تابع
+      }
+
       try {
-        const response = await fetch(`${API_URL}/api/news/${newsId}`); // ⬅️ درخواست به API جدید
+        const finalUrl = `${API_URL}/api/news/${newsId}`;
+        console.log("Fetching News Detail from URL:", finalUrl); // ⬅️ مجدداً برای اطمینان از URL
+        
+        const response = await fetch(finalUrl); 
+        
         if (!response.ok) {
-          throw new Error('News item not found!');
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
         setNewsItem(data);
@@ -27,10 +37,16 @@ const NewsDetailPage = () => {
     fetchNewsDetail();
   }, [newsId]);
 
+
   if (!newsItem) {
+    // ⬅️ تغییر برای نمایش خطا در صورت عدم وجود newsId
+    if (!newsId) {
+      return <h1 style={{textAlign: 'center', padding: '100px', color: 'red'}}>خطا: شناسه خبر پیدا نشد!</h1>;
+    }
     return <h1 style={{textAlign: 'center', padding: '100px'}}>در حال بارگذاری جزئیات خبر...</h1>;
   }
   
+  // ... بقیه کد
   return (
     <div className="page-content" style={{maxWidth: '900px', margin: '0 auto', padding: '50px 20px'}}>
       

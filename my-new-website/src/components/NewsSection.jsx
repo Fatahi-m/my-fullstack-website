@@ -5,41 +5,34 @@ import NewsCard from './NewsCard';
 import './NewsSection.css';
 
 const NewsSection = () => {
-  // استفاده از useState برای نگهداری داده‌های اخبار
   const [news, setNews] = useState([]);
 
-  // ⬅️ اینجا آدرس بک‌اند آنلاین Vercel شما تعریف می‌شود.
-  // لطفاً این آدرس را با آدرس دامنه اصلی Vercel خود جایگزین کنید!
+  // آدرس بک‌اند آنلاین Vercel شما (لطفا با آدرس دقیق خود جایگزین کنید)
   const API_URL = 'https://my-app-backend-gamma.vercel.app'; 
 
-  // استفاده از useEffect برای دریافت داده‌ها از API هنگام بارگذاری کامپوننت
   useEffect(() => {
-    // تابع برای ارسال درخواست به بک‌اند
     const fetchNews = async () => {
       try {
-        // ارسال درخواست به آدرس API بک‌اند آنلاین
         const response = await fetch(`${API_URL}/api/news`);
         const data = await response.json();
-        // ذخیره داده‌های دریافتی در وضعیت (state)
         setNews(data);
       } catch (error) {
-        // مدیریت خطا در صورت عدم موفقیت درخواست
         console.error('There was an error fetching the news!', error);
       }
     };
 
     fetchNews();
-  }, []); // آرایه خالی به React می‌گوید که این تابع فقط یک بار اجرا شود
+  }, []); 
 
   return (
     <section className="news-section">
       <div className="container">
         <h2>آخرین اخبار و رویدادها</h2>
         <div className="news-grid">
-          {/* نمایش کارت‌های خبری با استفاده از داده‌های دریافتی */}
           {news.map(item => (
             <NewsCard
               key={item.id}
+              id={item.id}  // ارسال ID برای مسیریابی پویا
               title={item.title}
               description={item.description}
               imageUrl={item.imageUrl}
