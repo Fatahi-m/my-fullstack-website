@@ -12,7 +12,15 @@
         "dest": "/api/index.py"
       },
       {
+        "src": "/api/news/(.*)",
+        "dest": "/api/index.py"
+      },
+      {
         "src": "/api/businesses",
+        "dest": "/api/index.py"
+      },
+      {
+        "src": "/api/businesses/(.*)",
         "dest": "/api/index.py"
       }
     ]
