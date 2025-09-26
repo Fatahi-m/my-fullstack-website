@@ -1,10 +1,7 @@
-// src/components/NewsCard.jsx
-
 import React from 'react';
-import { Link } from 'react-router-dom'; // ⬅️ Link را وارد می‌کنیم
+import { Link } from 'react-router-dom'; 
 import './NewsCard.css';
 
-// ⬅️ id را به عنوان prop دریافت می‌کنیم
 const NewsCard = ({ title, description, imageUrl, id }) => { 
   return (
     <div className="news-card">
@@ -12,7 +9,7 @@ const NewsCard = ({ title, description, imageUrl, id }) => {
       <div className="news-content">
         <h3>{title}</h3>
         <p>{description}</p>
-        {/* ⬅️ ساخت لینک پویا به مسیر /news/:id */}
+        {/* ⬅️ استفاده صحیح از id برای ساخت لینک پویا */}
         <Link to={`/news/${id}`} className="read-more">مطالعه بیشتر</Link> 
       </div>
     </div>
