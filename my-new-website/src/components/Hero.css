@@ -1,39 +1,39 @@
 /* src/components/Hero.css */
 
 .hero {
-    background-color: #f0f2f5;
-    color: #333;
-    text-align: center;
-    padding: 6rem 0;
-  }
-  
-  .hero .container {
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  .hero h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-  }
-  
-  .hero p {
-    font-size: 1.25rem;
-    line-height: 1.5;
-    margin-bottom: 2rem;
-  }
-  
-  .cta-button {
-    background-color: #007bff;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    font-size: 1.1rem;
-    border-radius: 5px;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .cta-button:hover {
-    background-color: #0056b3;
-  }
+  /* ⬅️ مسیر تصویر شما اعمال شد: /image-bg.png */
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/assets/image-bg.png') no-repeat center center;
+  background-size: cover;
+  color: white; /* تغییر رنگ متن به سفید برای خوانایی بهتر */
+  text-align: center;
+  padding: 8rem 0; /* افزایش ارتفاع برای جذابیت بیشتر */
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* سایه برای بهتر دیده شدن */
+}
+
+.hero p {
+  font-size: 1.5rem;
+  line-height: 1.6;
+  margin-bottom: 3rem;
+}
+
+.cta-button {
+  background-color: #ff9900; /* رنگ جذاب برای دکمه */
+  color: #222;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: #cc7a00;
+}

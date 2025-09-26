@@ -15,6 +15,8 @@ const Navbar = () => {
           <li><Link to="/news">اخبار و رویدادها</Link></li>
           <li><Link to="/directory">دایرکتوری</Link></li> {/* ⬅️ این لینک را بعداً می‌سازیم */}
           <li><Link to="/about">درباره ما</Link></li>
+          <li style={{marginLeft: '20px', fontWeight: 'bold'}}><Link to="/login">ورود</Link></li>
+          <li style={{marginLeft: '5px', fontWeight: 'bold'}}><Link to="/signup">ثبت نام</Link></li>
         </ul>
       </div>
     </nav>

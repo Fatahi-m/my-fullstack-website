@@ -1,0 +1,89 @@
+/* src/App.css */
+
+/* ------------------------------------------------ */
+/* 1. استایل‌های عمومی (که قبلا در index.css بودند) */
+/* ------------------------------------------------ */
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #2c3e50; 
+    background-color: #f4f7f6;
+}
+
+a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #2980b9;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+
+/* ------------------------------------------- */
+/* 2. استایل‌های بخش Hero (معرفی) */
+/* ------------------------------------------- */
+
+.hero {
+  /* مسیر تصویر پس‌زمینه (لطفاً آدرس صحیح /assets/image-bg.png را تأیید کنید) */
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/assets/image-bg.png') no-repeat center center;
+  background-size: cover;
+  color: white; 
+  text-align: center;
+  padding: 8rem 0; 
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
+}
+
+.hero p {
+  font-size: 1.5rem;
+  line-height: 1.6;
+  margin-bottom: 3rem;
+}
+
+.cta-button {
+  background-color: #ff9900;
+  color: #222;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: #cc7a00;
+}
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    background-color: #f4f7f6;
+    min-height: 80vh;
+}
+
+.auth-form {
+    background: #ffffff;
+    padding: 35px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: right;
+}
+
