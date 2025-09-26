@@ -53,12 +53,49 @@ def send_json_response(self, data):
     self.send_header('Content-type', 'application/json')
     self.end_headers()
     self.wfile.write(json.dumps(data).encode('utf-8'))
+def find_news_by_id(news_id):
+    """پیدا کردن خبر بر اساس ID در لیست داده‌های نمونه."""
+    try:
+        # جستجو در لیست news_data برای پیدا کردن آیتم با id مورد نظر
+        return next(item for item in news_data if str(item["id"]) == str(news_id))
+    except StopIteration:
+        return None
+
+def find_business_by_id(business_id):
+    """پیدا کردن کسب‌وکار بر اساس ID در لیست داده‌های نمونه."""
+    try:
+        # جستجو در لیست businesses_data
+        return next(item for item in businesses_data if str(item["id"]) == str(business_id))
+    except StopIteration:
+        return None
 
 # ⬅️ هندلر اصلی Vercel
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         s = urlparse(self.path)
         path = s.path
+
+        if path.startswith('/api/news/'):
+            parts = path.split('/')
+            news_id = parts[-1] 
+            item = find_news_by_id(news_id)
+            if item:
+                send_json_response(self, item)
+            else:
+                self.send_response(404)
+                self.end_headers()
+                self.wfile.write(b"News Item Not Found")
+
+        elif path.startswith('/api/businesses/'):
+            parts = path.split('/')
+            business_id = parts[-1]
+            item = find_business_by_id(business_id)
+            if item:
+                send_json_response(self, item)
+            else:
+                self.send_response(404)
+                self.end_headers()
+                self.wfile.write(b"Business Not Found")
 
         if path == '/api/news':
             send_json_response(self, news_data)
