@@ -2,6 +2,13 @@ from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse
 import json
 
+# =========================================================================
+# 1. داده‌های سراسری (شبیه‌سازی دیتابیس)
+# =========================================================================
+
+# لیست ساده برای شبیه‌سازی پایگاه داده کاربران (فقط در طول اجرای سرور ذخیره می‌شود)
+users = [] 
+
 # داده‌های نمونه اخبار
 news_data = [
     {
@@ -53,39 +60,98 @@ def find_item_by_id(data_list, item_id):
     except StopIteration:
         return None
 
+# تابع کمکی برای ارسال پاسخ JSON با هدر CORS
+def send_json_response(self, data, status_code=200):
+    self.send_response(status_code)
+    # هدر CORS برای اجازه دسترسی از هر دامنه‌ای
+    self.send_header('Access-Control-Allow-Origin', '*') 
+    self.send_header('Content-type', 'application/json')
+    self.end_headers()
+    self.wfile.write(json.dumps(data).encode('utf-8'))
+
+
+# =========================================================================
+# 2. هندلر اصلی (GET و POST)
+# =========================================================================
+
 class handler(BaseHTTPRequestHandler):
+    
+    # ⬅️ مدیریت درخواست‌های دریافت داده (GET)
     def do_GET(self):
         s = urlparse(self.path)
         path = s.path
-
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json')
-        # ⬅️ هدر CORS به صورت دستی
-        self.send_header('Access-Control-Allow-Origin', '*') 
-        self.end_headers()
 
         # مسیر جزئیات خبر
         if path.startswith('/api/news/'):
             parts = path.split('/')
             news_id = parts[-1] 
             item = find_item_by_id(news_data, news_id)
-            self.wfile.write(json.dumps(item).encode('utf-8'))
+            send_json_response(self, item)
 
         # مسیر جزئیات کسب‌وکار
         elif path.startswith('/api/businesses/'):
             parts = path.split('/')
             business_id = parts[-1]
             item = find_item_by_id(businesses_data, business_id)
-            self.wfile.write(json.dumps(item).encode('utf-8'))
+            send_json_response(self, item)
 
         # مسیر لیست اخبار
         elif path == '/api/news':
-            self.wfile.write(json.dumps(news_data).encode('utf-8'))
+            send_json_response(self, news_data)
 
         # مسیر لیست کسب‌وکارها
         elif path == '/api/businesses':
-            self.wfile.write(json.dumps(businesses_data).encode('utf-8'))
+            send_json_response(self, businesses_data)
 
+        else:
+            self.send_response(404)
+            self.end_headers()
+            self.wfile.write(b"Not Found")
+
+
+    # ⬅️ مدیریت درخواست‌های ثبت‌نام و ورود (POST)
+    def do_POST(self):
+        s = urlparse(self.path)
+        path = s.path
+        
+        try:
+            # 1. خواندن داده‌های ارسالی از فرانت‌اند
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            data = json.loads(post_data.decode('utf-8'))
+        except Exception:
+            self.send_response(400)
+            self.end_headers()
+            self.wfile.write(b"Invalid JSON")
+            return
+
+        # 2. مدیریت مسیر ثبت‌نام
+        if path == '/api/auth/signup':
+            user_exists = any(u['email'] == data['email'] for u in users)
+            
+            if user_exists:
+                # اگر کاربر قبلاً ثبت نام کرده باشد
+                send_json_response(self, {'message': 'User already exists'}, status_code=409) # 409 Conflict
+                return
+            
+            # ثبت کاربر جدید و اضافه کردن به لیست
+            new_user = {'id': len(users) + 1, 'username': data['username'], 'email': data['email'], 'password': data['password']}
+            users.append(new_user)
+            
+            # پاسخ موفقیت‌آمیز
+            send_json_response(self, {'message': 'User created successfully', 'user_id': new_user['id']}, status_code=201) # 201 Created
+
+        # 3. مدیریت مسیر ورود
+        elif path == '/api/auth/login':
+            user = next((u for u in users if u['email'] == data['email'] and u['password'] == data['password']), None)
+            
+            if user:
+                # پاسخ موفقیت‌آمیز
+                send_json_response(self, {'message': 'Login successful', 'user_id': user['id']})
+            else:
+                # پاسخ ناموفق
+                send_json_response(self, {'message': 'Invalid credentials'}, status_code=401) # 401 Unauthorized
+        
         else:
             self.send_response(404)
             self.end_headers()
