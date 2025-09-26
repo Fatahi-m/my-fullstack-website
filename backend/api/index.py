@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse
 import json
 
-# داده‌های نمونه (بدون تغییر)
+# داده‌های نمونه اخبار
 news_data = [
     {
         "id": 1,
@@ -24,6 +24,7 @@ news_data = [
     }
 ]
 
+# داده‌های نمونه برای کسب‌وکارها
 businesses_data = [
     {
         "id": 1,
@@ -45,62 +46,46 @@ businesses_data = [
     }
 ]
 
-# ⬅️ تابع کمکی برای ارسال پاسخ JSON با هدر CORS
-def send_json_response(self, data):
-    self.send_response(200)
-    # ⬅️ هدر اصلی CORS که اجازه دسترسی به همه دامنه‌ها را می‌دهد
-    self.send_header('Access-Control-Allow-Origin', '*') 
-    self.send_header('Content-type', 'application/json')
-    self.end_headers()
-    self.wfile.write(json.dumps(data).encode('utf-8'))
-def find_news_by_id(news_id):
-    """پیدا کردن خبر بر اساس ID در لیست داده‌های نمونه."""
+# تابع کمکی برای پیدا کردن آیتم بر اساس ID
+def find_item_by_id(data_list, item_id):
     try:
-        # جستجو در لیست news_data برای پیدا کردن آیتم با id مورد نظر
-        return next(item for item in news_data if str(item["id"]) == str(news_id))
+        return next(item for item in data_list if str(item["id"]) == str(item_id))
     except StopIteration:
         return None
 
-def find_business_by_id(business_id):
-    """پیدا کردن کسب‌وکار بر اساس ID در لیست داده‌های نمونه."""
-    try:
-        # جستجو در لیست businesses_data
-        return next(item for item in businesses_data if str(item["id"]) == str(business_id))
-    except StopIteration:
-        return None
-
-# ⬅️ هندلر اصلی Vercel
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         s = urlparse(self.path)
         path = s.path
 
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        # ⬅️ هدر CORS به صورت دستی
+        self.send_header('Access-Control-Allow-Origin', '*') 
+        self.end_headers()
+
+        # مسیر جزئیات خبر
         if path.startswith('/api/news/'):
             parts = path.split('/')
             news_id = parts[-1] 
-            item = find_news_by_id(news_id)
-            if item:
-                send_json_response(self, item)
-            else:
-                self.send_response(404)
-                self.end_headers()
-                self.wfile.write(b"News Item Not Found")
+            item = find_item_by_id(news_data, news_id)
+            self.wfile.write(json.dumps(item).encode('utf-8'))
 
+        # مسیر جزئیات کسب‌وکار
         elif path.startswith('/api/businesses/'):
             parts = path.split('/')
             business_id = parts[-1]
-            item = find_business_by_id(business_id)
-            if item:
-                send_json_response(self, item)
-            else:
-                self.send_response(404)
-                self.end_headers()
-                self.wfile.write(b"Business Not Found")
+            item = find_item_by_id(businesses_data, business_id)
+            self.wfile.write(json.dumps(item).encode('utf-8'))
 
-        if path == '/api/news':
-            send_json_response(self, news_data)
+        # مسیر لیست اخبار
+        elif path == '/api/news':
+            self.wfile.write(json.dumps(news_data).encode('utf-8'))
+
+        # مسیر لیست کسب‌وکارها
         elif path == '/api/businesses':
-            send_json_response(self, businesses_data)
+            self.wfile.write(json.dumps(businesses_data).encode('utf-8'))
+
         else:
             self.send_response(404)
             self.end_headers()
