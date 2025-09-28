@@ -156,3 +156,11 @@ class handler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
             self.wfile.write(b"Not Found")
+
+            # ⬅️ متد جدید برای مدیریت درخواست‌های CORS Preflight (OPTIONS)
+    def do_OPTIONS(self):
+        self.send_response(200)  # پاسخ موفقیت‌آمیز برای Preflight
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
