@@ -7,20 +7,24 @@
       }
     ],
     "routes": [
+    
       {
-        "src": "/api/news",
+        "src": "/api/auth/(.*)",
+        "methods": ["OPTIONS"],
         "dest": "/api/index.py"
       },
+      
+    
       {
-        "src": "/api/news/(.*)",
+        "src": "/api/(news|businesses)/(.*)",
+        "methods": ["OPTIONS"],
         "dest": "/api/index.py"
       },
+  
+    
       {
-        "src": "/api/businesses",
-        "dest": "/api/index.py"
-      },
-      {
-        "src": "/api/businesses/(.*)",
+        "src": "/api/(.*)",
+        "methods": ["GET", "POST"],
         "dest": "/api/index.py"
       }
     ]
