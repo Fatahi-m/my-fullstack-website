@@ -11,46 +11,16 @@ users = []
 
 # داده‌های نمونه اخبار
 news_data = [
-    {
-        "id": 1,
-        "title": "افتتاح بزرگترین مرکز نوآوری در تهران",
-        "description": "مرکز نوآوری تهران با هدف حمایت از استارتاپ‌ها و توسعه تکنولوژی افتتاح شد.",
-        "imageUrl": "https://via.placeholder.com/300x200.png?text=اخبار+۱"
-    },
-    {
-        "id": 2,
-        "title": "وبینار رایگان بازاریابی دیجیتال",
-        "description": "فرصتی برای یادگیری جدیدترین تکنیک‌های بازاریابی از متخصصان برجسته.",
-        "imageUrl": "https://via.placeholder.com/300x200.png?text=اخبار+۲"
-    },
-    {
-        "id": 3,
-        "title": "رویداد استارتاپ ویکند",
-        "description": "فرصتی برای تیم‌سازی و تبدیل ایده‌های نوآورانه به یک کسب‌وکار واقعی.",
-        "imageUrl": "https://via.placeholder.com/300x200.png?text=اخبار+۳"
-    }
+    {"id": 1, "title": "افتتاح بزرگترین مرکز نوآوری در تهران", "description": "مرکز نوآوری تهران با هدف حمایت از استارتاپ‌ها و توسعه تکنولوژی افتتاح شد.", "imageUrl": "https://via.placeholder.com/300x200.png?text=اخبار+۱"},
+    {"id": 2, "title": "وبینار رایگان بازاریابی دیجیتال", "description": "فرصتی برای یادگیری جدیدترین تکنیک‌های بازاریابی از متخصصان برجسته.", "imageUrl": "https://via.placeholder.com/300x200.png?text=اخبار+۲"},
+    {"id": 3, "title": "رویداد استارتاپ ویکند", "description": "فرصتی برای تیم‌سازی و تبدیل ایده‌های نوآورانه به یک کسب‌وکار واقعی.", "imageUrl": "https://via.placeholder.com/300x200.png?text=اخبار+۳"}
 ]
 
 # داده‌های نمونه برای کسب‌وکارها
 businesses_data = [
-    {
-        "id": 1,
-        "name": "کافی‌شاپ پاتوق",
-        "category": "کافی‌شاپ و رستوران",
-        "imageUrl": "https://via.placeholder.com/300x200.png?text=کسب‌وکار+۱"
-    },
-    {
-        "id": 2,
-        "name": "آکادمی کدنویسی",
-        "category": "آموزش و مشاوره",
-        "imageUrl": "https://via.placeholder.com/300x200.png?text=کسب‌وکار+۲"
-    },
-    {
-        "id": 3,
-        "name": "فروشگاه آنلاین مد روز",
-        "category": "پوشاک و مد",
-        "imageUrl": "https://via.placeholder.com/300x200.png?text=کسب‌وکار+۳"
-    }
+    {"id": 1, "name": "کافی‌شاپ پاتوق", "category": "کافی‌شاپ و رستوران", "imageUrl": "https://via.placeholder.com/300x200.png?text=کسب‌وکار+۱"},
+    {"id": 2, "name": "آکادمی کدنویسی", "category": "آموزش و مشاوره", "imageUrl": "https://via.placeholder.com/300x200.png?text=کسب‌وکار+۲"},
+    {"id": 3, "name": "فروشگاه آنلاین مد روز", "category": "پوشاک و مد", "imageUrl": "https://via.placeholder.com/300x200.png?text=کسب‌وکار+۳"}
 ]
 
 # تابع کمکی برای پیدا کردن آیتم بر اساس ID
@@ -63,7 +33,6 @@ def find_item_by_id(data_list, item_id):
 # تابع کمکی برای ارسال پاسخ JSON با هدر CORS
 def send_json_response(self, data, status_code=200):
     self.send_response(status_code)
-    # هدر CORS برای اجازه دسترسی از هر دامنه‌ای
     self.send_header('Access-Control-Allow-Origin', '*') 
     self.send_header('Content-type', 'application/json')
     self.end_headers()
@@ -71,12 +40,12 @@ def send_json_response(self, data, status_code=200):
 
 
 # =========================================================================
-# 2. هندلر اصلی (GET و POST)
+# 2. هندلر اصلی (GET، POST و OPTIONS)
 # =========================================================================
 
 class handler(BaseHTTPRequestHandler):
     
-    # ⬅️ مدیریت درخواست‌های دریافت داده (GET)
+    # مدیریت درخواست‌های دریافت داده (GET)
     def do_GET(self):
         s = urlparse(self.path)
         path = s.path
@@ -109,7 +78,7 @@ class handler(BaseHTTPRequestHandler):
             self.wfile.write(b"Not Found")
 
 
-    # ⬅️ مدیریت درخواست‌های ثبت‌نام و ورود (POST)
+    # مدیریت درخواست‌های ثبت‌نام و ورود (POST)
     def do_POST(self):
         s = urlparse(self.path)
         path = s.path
@@ -130,15 +99,11 @@ class handler(BaseHTTPRequestHandler):
             user_exists = any(u['email'] == data['email'] for u in users)
             
             if user_exists:
-                # اگر کاربر قبلاً ثبت نام کرده باشد
                 send_json_response(self, {'message': 'User already exists'}, status_code=409) # 409 Conflict
                 return
             
-            # ثبت کاربر جدید و اضافه کردن به لیست
             new_user = {'id': len(users) + 1, 'username': data['username'], 'email': data['email'], 'password': data['password']}
             users.append(new_user)
-            
-            # پاسخ موفقیت‌آمیز
             send_json_response(self, {'message': 'User created successfully', 'user_id': new_user['id']}, status_code=201) # 201 Created
 
         # 3. مدیریت مسیر ورود
@@ -146,8 +111,8 @@ class handler(BaseHTTPRequestHandler):
             user = next((u for u in users if u['email'] == data['email'] and u['password'] == data['password']), None)
             
             if user:
-                # پاسخ موفقیت‌آمیز
-                send_json_response(self, {'message': 'Login successful', 'user_id': user['id']})
+                # ⬅️ پاسخ موفقیت‌آمیز: اضافه کردن username به پاسخ
+                send_json_response(self, {'message': 'Login successful', 'user_id': user['id'], 'username': user['username']}) 
             else:
                 # پاسخ ناموفق
                 send_json_response(self, {'message': 'Invalid credentials'}, status_code=401) # 401 Unauthorized
@@ -157,9 +122,10 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(b"Not Found")
 
-            # ⬅️ متد جدید برای مدیریت درخواست‌های CORS Preflight (OPTIONS)
+
+    # ⬅️ مدیریت درخواست‌های CORS Preflight (OPTIONS) - بدون تغییر نسبت به قبل
     def do_OPTIONS(self):
-        self.send_response(200)  # پاسخ موفقیت‌آمیز برای Preflight
+        self.send_response(200) 
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
