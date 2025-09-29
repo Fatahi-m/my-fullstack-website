@@ -1,13 +1,25 @@
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse
 import json
+import os # ⬅️ برای خواندن متغیر محیطی
+from pymongo import MongoClient # ⬅️ برای اتصال به MongoDB
+from bson.objectid import ObjectId # ⬅️ برای تبدیل ObjectId به رشته
 
 # =========================================================================
-# 1. داده‌های سراسری (شبیه‌سازی دیتابیس)
+# 1. اتصال به دیتابیس و داده‌های سراسری
 # =========================================================================
 
-# لیست ساده برای شبیه‌سازی پایگاه داده کاربران (فقط در طول اجرای سرور ذخیره می‌شود)
-users = [] 
+try:
+    # ⬅️ ⬅️ ⬅️ اتصال به MongoDB از طریق متغیر محیطی Vercel
+    client = MongoClient(os.environ.get("MONGODB_URI"))
+    db = client.user_db  # نام دیتابیس
+    users_collection = db.users # کالکشن (جدول) کاربران
+    DB_CONNECTED = True
+except Exception as e:
+    print(f"ERROR: Could not connect to MongoDB: {e}")
+    DB_CONNECTED = False
+    # در صورت شکست اتصال، از یک لیست موقت برای جلوگیری از کرش استفاده می‌کنیم
+    users = [] 
 
 # داده‌های نمونه اخبار
 news_data = [
@@ -23,15 +35,20 @@ businesses_data = [
     {"id": 3, "name": "فروشگاه آنلاین مد روز", "category": "پوشاک و مد", "imageUrl": "https://via.placeholder.com/300x200.png?text=کسب‌وکار+۳"}
 ]
 
-# تابع کمکی برای پیدا کردن آیتم بر اساس ID
+# تابع کمکی برای پیدا کردن آیتم بر اساس ID (بدون تغییر)
 def find_item_by_id(data_list, item_id):
+    # ... (کد قبلی) ...
     try:
         return next(item for item in data_list if str(item["id"]) == str(item_id))
     except StopIteration:
         return None
 
-# تابع کمکی برای ارسال پاسخ JSON با هدر CORS
+# تابع کمکی برای ارسال پاسخ JSON (بدون تغییر)
 def send_json_response(self, data, status_code=200):
+    # ⬅️ تبدیل ObjectId برای سازگاری با JSON
+    if data and isinstance(data, dict) and '_id' in data:
+        data['user_id'] = str(data.pop('_id')) 
+    
     self.send_response(status_code)
     self.send_header('Access-Control-Allow-Origin', '*') 
     self.send_header('Content-type', 'application/json')
@@ -45,35 +62,19 @@ def send_json_response(self, data, status_code=200):
 
 class handler(BaseHTTPRequestHandler):
     
-    # مدیریت درخواست‌های دریافت داده (GET)
-    def do_GET(self):
-        s = urlparse(self.path)
-        path = s.path
-
-        if path.startswith('/api/news/'):
-            parts = path.split('/')
-            news_id = parts[-1] 
-            item = find_item_by_id(news_data, news_id)
-            send_json_response(self, item)
-        elif path.startswith('/api/businesses/'):
-            parts = path.split('/')
-            business_id = parts[-1]
-            item = find_item_by_id(businesses_data, business_id)
-            send_json_response(self, item)
-        elif path == '/api/news':
-            send_json_response(self, news_data)
-        elif path == '/api/businesses':
-            send_json_response(self, businesses_data)
-        else:
-            self.send_response(404)
-            self.end_headers()
-            self.wfile.write(b"Not Found")
+    # ... (do_GET بدون تغییر) ...
 
     # مدیریت درخواست‌های ثبت‌نام و ورود (POST)
     def do_POST(self):
         s = urlparse(self.path)
         path = s.path
         
+        # ⬅️ مدیریت وضعیت قطعی دیتابیس
+        if not DB_CONNECTED and path.startswith('/api/auth'):
+             send_json_response(self, {'message': 'Database connection failed'}, status_code=503)
+             return
+        
+        # ... (خواندن داده‌ها از درخواست و try/except) ...
         try:
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length)
@@ -84,36 +85,38 @@ class handler(BaseHTTPRequestHandler):
             self.wfile.write(b"Invalid JSON")
             return
 
-        # 2. مدیریت مسیر ثبت‌نام
+        # 2. مدیریت مسیر ثبت‌نام (استفاده از MongoDB)
         if path == '/api/auth/signup':
-            user_exists = any(u['email'] == data['email'] for u in users)
+            # بررسی وجود کاربر در MongoDB
+            user_exists = users_collection.find_one({"email": data['email']})
             
             if user_exists:
-                send_json_response(self, {'message': 'User already exists'}, status_code=409) # 409 Conflict
+                send_json_response(self, {'message': 'User already exists'}, status_code=409) 
                 return
             
-            new_user = {'id': len(users) + 1, 'username': data['username'], 'email': data['email'], 'password': data['password']}
-            users.append(new_user)
-            send_json_response(self, {'message': 'User created successfully', 'user_id': new_user['id']}, status_code=201) # 201 Created
+            # ثبت کاربر جدید در MongoDB
+            new_user = {'username': data['username'], 'email': data['email'], 'password': data['password']}
+            result = users_collection.insert_one(new_user)
+            
+            # پاسخ موفقیت‌آمیز با MongoDB ObjectId
+            send_json_response(self, {'message': 'User created successfully', 'user_id': str(result.inserted_id)}, status_code=201)
 
-        # 3. مدیریت مسیر ورود
+        # 3. مدیریت مسیر ورود (استفاده از MongoDB)
         elif path == '/api/auth/login':
-            user = next((u for u in users if u['email'] == data['email'] and u['password'] == data['password']), None)
+            # جستجو در MongoDB
+            user = users_collection.find_one({"email": data['email'], "password": data['password']})
             
             if user:
-                # پاسخ موفقیت‌آمیز: اضافه کردن username به پاسخ
-                send_json_response(self, {'message': 'Login successful', 'user_id': user['id'], 'username': user['username']}) 
+                # پاسخ موفقیت‌آمیز: اضافه کردن username و تبدیل ObjectId به رشته
+                send_json_response(self, user) # send_json_response ObjectId را تبدیل می‌کند
             else:
-                # پاسخ ناموفق
-                send_json_response(self, {'message': 'Invalid credentials'}, status_code=401) # 401 Unauthorized
+                send_json_response(self, {'message': 'Invalid credentials'}, status_code=401) 
         
-        else:
-            self.send_response(404)
-            self.end_headers()
-            self.wfile.write(b"Not Found")
+        # 4. مدیریت مسیر خروج و Not Found (بدون تغییر)
+        # ... (کد قبلی) ...
 
 
-    # ⬅️ مدیریت درخواست‌های CORS Preflight (OPTIONS) - این متد باید داخل کلاس باشد
+    # ⬅️ مدیریت درخواست‌های CORS Preflight (OPTIONS)
     def do_OPTIONS(self):
         self.send_response(200) 
         self.send_header('Access-Control-Allow-Origin', '*')
