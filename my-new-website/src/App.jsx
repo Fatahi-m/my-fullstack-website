@@ -13,12 +13,8 @@ import NewsDetailPage from './pages/NewsDetailPage';
 import BusinessDetailPage from './pages/BusinessDetailPage';
 import LoginPage from './pages/LoginPage'; // ⬅️ کامپوننت نهایی ورود
 import SignUpPage from './pages/SignUpPage'; // ⬅️ کامپوننت نهایی ثبت نام
+import AboutPage from './pages/AboutPage';
 
-
-// ⬅️ تعریف کامپوننت‌های موقت برای احراز هویت و درباره ما
-const AboutPage = () => <h1>صفحه درباره ما</h1>; 
-// const LoginPage = () => <h1>صفحه ورود</h1>; // ⬅️ حذف شد
-// const SignUpPage = () => <h1>صفحه ثبت نام</h1>; // ⬅️ حذف شد
 
 
 function App() {

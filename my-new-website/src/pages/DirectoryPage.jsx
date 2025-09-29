@@ -7,19 +7,31 @@ import '../App.css';
 
 const DirectoryPage = () => {
   const [businesses, setBusinesses] = useState([]); // لیست کامل دریافتی از API
-  const [searchTerm, setSearchTerm] = useState(''); // وضعیت جدید: متن جستجو
-  const [filteredBusinesses, setFilteredBusinesses] = useState([]); // وضعیت جدید: لیست فیلترشده
+  const [searchTerm, setSearchTerm] = useState(''); // وضعیت: متن جستجو
+  const [filteredBusinesses, setFilteredBusinesses] = useState([]); // وضعیت: لیست فیلترشده
   
+  // ⬅️ وضعیت جدید: لیست تمام دسته‌بندی‌های موجود
+  const [categories, setCategories] = useState([]); 
+  
+  // ⬅️ وضعیت جدید: دسته‌بندی انتخاب شده توسط کاربر (پیش‌فرض: All)
+  const [selectedCategory, setSelectedCategory] = useState('All'); 
+
   const API_URL = 'https://my-app-backend-gamma.vercel.app'; 
 
-  // 1. دریافت داده‌ها از API
+  // 1. دریافت داده‌ها از API و استخراج دسته‌بندی‌ها
   useEffect(() => {
     const fetchBusinesses = async () => {
       try {
         const response = await fetch(`${API_URL}/api/businesses`);
         const data = await response.json();
+        
         setBusinesses(data);
-        setFilteredBusinesses(data);
+        
+        // ⬅️ استخراج دسته‌بندی‌های منحصر به فرد
+        const allCategories = ['All', ...new Set(data.map(item => item.category))];
+        setCategories(allCategories);
+        
+        setFilteredBusinesses(data); // لیست اولیه
       } catch (error) {
         console.error('Error fetching all businesses!', error);
       }
@@ -27,22 +39,35 @@ const DirectoryPage = () => {
     fetchBusinesses();
   }, []);
 
-  // 2. اجرای منطق جستجو و فیلتر
+  // 2. اجرای منطق جستجو و فیلتر (اجرا در هر تغییر SearchTerm یا SelectedCategory)
   useEffect(() => {
-    const filterBusinesses = businesses.filter(business => {
-      // جستجو بر اساس نام یا دسته‌بندی
-      return (
+    let finalFiltered = businesses.filter(business => {
+      // فیلتر بر اساس متن جستجو
+      const searchMatch = (
         business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         business.category.toLowerCase().includes(searchTerm.toLowerCase())
       );
+      
+      // ⬅️ فیلتر بر اساس دسته‌بندی انتخاب شده
+      const categoryMatch = (
+        selectedCategory === 'All' || business.category === selectedCategory
+      );
+
+      return searchMatch && categoryMatch;
     });
-    setFilteredBusinesses(filterBusinesses);
-  }, [searchTerm, businesses]);
+    
+    setFilteredBusinesses(finalFiltered);
+  }, [searchTerm, selectedCategory, businesses]); // ⬅️ این Effect به هر سه متغیر وابسته است
 
 
   // 3. تابع مدیریت تغییرات در نوار جستجو
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
+  };
+
+  // ⬅️ تابع جدید برای مدیریت تغییرات منوی کشویی
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
   };
 
 
@@ -52,15 +77,28 @@ const DirectoryPage = () => {
         <h1>دایرکتوری کامل کسب‌وکارها</h1>
         <hr />
         
-        {/* ⬅️ نوار جستجو با کلاس CSS برای استایل‌دهی بهتر */}
-        <div className="directory-search-container">
+        {/* ⬅️ بخش کنترل‌ها: جستجو و فیلتر */}
+        <div className="directory-controls"> 
+          
+          {/* نوار جستجو */}
           <input
             type="text"
-            placeholder="جستجو بر اساس نام یا دسته‌بندی..."
+            placeholder="جستجو بر اساس نام..."
             value={searchTerm}
             onChange={handleSearchChange}
-            // ⬅️ استایل‌های اینلاین حذف شدند
           />
+
+          {/* ⬅️ منوی کشویی فیلتر */}
+          <select 
+            value={selectedCategory} 
+            onChange={handleCategoryChange}
+          >
+            {categories.map(cat => (
+              <option key={cat} value={cat}>
+                {cat === 'All' ? 'همه دسته‌بندی‌ها' : cat}
+              </option>
+            ))}
+          </select>
         </div>
         
         {/* نمایش لیست فیلترشده */}
@@ -68,6 +106,7 @@ const DirectoryPage = () => {
           {filteredBusinesses.map(item => (
             <BusinessCard
               key={item.id}
+              id={item.id} 
               name={item.name}
               category={item.category}
               imageUrl={item.imageUrl}
