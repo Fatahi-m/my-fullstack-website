@@ -1,10 +1,23 @@
 // src/components/Navbar.jsx
 
 import React from 'react';
-import { Link } from 'react-router-dom'; // ⬅️ Link را وارد می‌کنیم
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; 
 import './Navbar.css';
 
 const Navbar = () => {
+  const { isLoggedIn, user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout(); 
+    navigate('/');
+    alert('شما با موفقیت از سیستم خارج شدید.');
+  };
+
+  // ⬅️ نمایش نام کاربری (یا ایمیل اگر نام کاربری خالی بود)
+  const displayUserName = user ? (user.username || user.email) : 'مهمان';
+
   return (
     <nav className="navbar">
       <div className="container">
@@ -13,10 +26,30 @@ const Navbar = () => {
         </Link>
         <ul className="nav-links">
           <li><Link to="/news">اخبار و رویدادها</Link></li>
-          <li><Link to="/directory">دایرکتوری</Link></li> {/* ⬅️ این لینک را بعداً می‌سازیم */}
+          <li><Link to="/directory">دایرکتوری</Link></li>
           <li><Link to="/about">درباره ما</Link></li>
-          <li style={{marginLeft: '20px', fontWeight: 'bold'}}><Link to="/login">ورود</Link></li>
-          <li style={{marginLeft: '5px', fontWeight: 'bold'}}><Link to="/signup">ثبت نام</Link></li>
+
+          {/* ⬅️ نمایش مشروط بر اساس وضعیت ورود */}
+          {isLoggedIn ? (
+            <>
+              {/* ⬅️ نمایش مستقیم نام کاربری/ایمیل */}
+              <li style={{fontWeight: 'bold', color: '#007bff'}}>
+                {displayUserName} 
+              </li>
+              <li>
+                {/* ⬅️ دکمه خروج جداگانه */}
+                <button onClick={handleLogout} className="cta-button" 
+                        style={{padding: '5px 10px', fontSize: '0.9rem', backgroundColor: '#c0392b', color: 'white'}}>
+                  خروج
+                </button>
+              </li>
+            </>
+          ) : (
+            <>
+              <li><Link to="/login">ورود</Link></li>
+              <li><Link to="/signup">ثبت نام</Link></li>
+            </>
+          )}
         </ul>
       </div>
     </nav>

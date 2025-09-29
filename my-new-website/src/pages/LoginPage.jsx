@@ -1,9 +1,13 @@
 // src/pages/LoginPage.jsx
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // ⬅️ useNavigate برای هدایت کاربر
+import { useAuth } from '../context/AuthContext'; // ⬅️ useAuth برای مدیریت وضعیت ورود
 
 const LoginPage = () => {
+  const { login } = useAuth(); // ⬅️ تابع login از Context
+  const navigate = useNavigate(); // ⬅️ قلاب (Hook) برای هدایت کاربر پس از ورود موفق
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -16,10 +20,39 @@ const LoginPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  // ⬅️ منطق نهایی برای ارسال داده به API بک‌اند
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('User logging in with:', formData);
-    alert('درخواست ورود ارسال شد.');
+    
+    // 🚨 آدرس بک‌اند آنلاین شما (لطفاً مطمئن شوید که صحیح باشد)
+    const API_URL = 'https://my-app-backend-gamma.vercel.app'; 
+
+    try {
+        const response = await fetch(`${API_URL}/api/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData), // ارسال داده‌های فرم به بک‌اند
+        });
+
+        const data = await response.json(); // خواندن پاسخ از بک‌اند
+
+        if (response.status === 200) {
+            alert('ورود موفقیت آمیز!');
+            
+            // ⬅️ به‌روزرسانی وضعیت سراسری و هدایت به صفحه اصلی
+            login({ userId: data.user_id, email: formData.email }); 
+            navigate('/'); // هدایت به صفحه اصلی
+            
+        } else {
+            // نمایش خطای اعتبار سنجی ناموفق
+            alert(`خطا در ورود: ${data.message || 'اعتبار سنجی ناموفق'}`);
+        }
+    } catch (error) {
+        console.error('Network or server error:', error);
+        alert('خطا در ارتباط با سرور.');
+    }
   };
 
   return (
@@ -32,11 +65,11 @@ const LoginPage = () => {
         
         <h2 style={{textAlign: 'center', marginBottom: '25px', fontSize: '1.8rem', color: '#2c3e50'}}>ورود به حساب کاربری</h2>
 
-        <label htmlFor="email" style={{display: 'block', marginBottom: '8px', marginTop: '15px', fontWeight: '600', color: '#34495e'}}>ایمیل:</label>
+        <label htmlFor="email" style={{display: 'block', marginBottom: '8px', marginTop: '15px', fontWeight: '600', color: '#34985e'}}>ایمیل:</label>
         <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required
                style={{width: '100%', padding: '12px 15px', marginBottom: '15px', border: '1px solid #dfe6e9', borderRadius: '6px', boxSizing: 'border-box', fontSize: '1rem', direction: 'ltr', textAlign: 'left'}}/>
 
-        <label htmlFor="password" style={{display: 'block', marginBottom: '8px', marginTop: '15px', fontWeight: '600', color: '#34495e'}}>رمز عبور:</label>
+        <label htmlFor="password" style={{display: 'block', marginBottom: '8px', marginTop: '15px', fontWeight: '600', color: '#34985e'}}>رمز عبور:</label>
         <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required
                style={{width: '100%', padding: '12px 15px', marginBottom: '15px', border: '1px solid #dfe6e9', borderRadius: '6px', boxSizing: 'border-box', fontSize: '1rem', direction: 'ltr', textAlign: 'left'}}/>
 

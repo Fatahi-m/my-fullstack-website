@@ -42,3 +42,9 @@
   .nav-links a:hover {
     color: #007bff;
   }
+  .nav-links li {
+    list-style: none; /* این خط از قبل هست */
+    margin-left: 20px; /* ⬅️ فاصله بین آیتم‌ها */
+    display: flex; /* ⬅️ استفاده از فلکس برای تراز کردن محتوای هر آیتم */
+    align-items: center;
+  }
