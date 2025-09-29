@@ -1,9 +1,11 @@
 // src/pages/SignUpPage.jsx
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // ⬅️ ⬅️ useNavigate را وارد می‌کنیم
 
 const SignUpPage = () => {
+  const navigate = useNavigate(); // ⬅️ ⬅️ استفاده از قلاب useNavigate برای هدایت کاربر
+
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -21,7 +23,7 @@ const SignUpPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // 🚨 آدرس بک‌اند آنلاین شما (لطفاً مطمئن شوید که صحیح باشد)
+    // 🚨 آدرس بک‌اند آنلاین شما (مطمئن شوید که صحیح باشد)
     const API_URL = 'https://my-app-backend-gamma.vercel.app'; 
 
     try {
@@ -37,8 +39,10 @@ const SignUpPage = () => {
 
         if (response.status === 201) {
             alert('ثبت نام موفقیت آمیز بود! اکنون می‌توانید وارد شوید.');
-            // ⬅️ اینجا می‌توانید کاربر را به صفحه ورود هدایت کنید
-            // window.location.href = '/login'; 
+            
+            // ⬅️ ⬅️ ⬅️ تغییر حیاتی: هدایت کاربر به صفحه ورود
+            navigate('/login'); 
+            
         } else if (response.status === 409) {
              alert(`خطا در ثبت نام: این ایمیل قبلاً ثبت شده است.`);
         } else {

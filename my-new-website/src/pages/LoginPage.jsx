@@ -1,8 +1,8 @@
 // src/pages/LoginPage.jsx
 
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Link, useNavigate } from 'react-router-dom'; // ⬅️ useNavigate برای هدایت کاربر
+import { useAuth } from '../context/AuthContext'; // ⬅️ useAuth برای مدیریت وضعیت ورود
 
 const LoginPage = () => {
   const { login } = useAuth();
@@ -40,16 +40,17 @@ const LoginPage = () => {
         if (response.status === 200) {
             alert('ورود موفقیت آمیز!');
             
-            // ⬅️ به‌روزرسانی نهایی: ذخیره username دریافتی از API
+            // ⬅️ ذخیره وضعیت و هدایت کاربر به صفحه اصلی
             login({ 
                 userId: data.user_id, 
                 email: formData.email,
-                username: data.username // ⬅️ ⬅️ ⬅️ ذخیره نام کاربری برای نمایش در Navbar
+                username: data.username
             }); 
             
-            navigate('/'); 
+            navigate('/'); // ⬅️ ⬅️ هدایت خودکار به صفحه اصلی
             
         } else {
+            // نمایش خطای اعتبار سنجی ناموفق
             alert(`خطا در ورود: ${data.message || 'اعتبار سنجی ناموفق'}`);
         }
     } catch (error) {
