@@ -50,33 +50,24 @@ class handler(BaseHTTPRequestHandler):
         s = urlparse(self.path)
         path = s.path
 
-        # مسیر جزئیات خبر
         if path.startswith('/api/news/'):
             parts = path.split('/')
             news_id = parts[-1] 
             item = find_item_by_id(news_data, news_id)
             send_json_response(self, item)
-
-        # مسیر جزئیات کسب‌وکار
         elif path.startswith('/api/businesses/'):
             parts = path.split('/')
             business_id = parts[-1]
             item = find_item_by_id(businesses_data, business_id)
             send_json_response(self, item)
-
-        # مسیر لیست اخبار
         elif path == '/api/news':
             send_json_response(self, news_data)
-
-        # مسیر لیست کسب‌وکارها
         elif path == '/api/businesses':
             send_json_response(self, businesses_data)
-
         else:
             self.send_response(404)
             self.end_headers()
             self.wfile.write(b"Not Found")
-
 
     # مدیریت درخواست‌های ثبت‌نام و ورود (POST)
     def do_POST(self):
@@ -84,7 +75,6 @@ class handler(BaseHTTPRequestHandler):
         path = s.path
         
         try:
-            # 1. خواندن داده‌های ارسالی از فرانت‌اند
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length)
             data = json.loads(post_data.decode('utf-8'))
@@ -111,7 +101,7 @@ class handler(BaseHTTPRequestHandler):
             user = next((u for u in users if u['email'] == data['email'] and u['password'] == data['password']), None)
             
             if user:
-                # ⬅️ پاسخ موفقیت‌آمیز: اضافه کردن username به پاسخ
+                # پاسخ موفقیت‌آمیز: اضافه کردن username به پاسخ
                 send_json_response(self, {'message': 'Login successful', 'user_id': user['id'], 'username': user['username']}) 
             else:
                 # پاسخ ناموفق
@@ -123,7 +113,7 @@ class handler(BaseHTTPRequestHandler):
             self.wfile.write(b"Not Found")
 
 
-    # ⬅️ مدیریت درخواست‌های CORS Preflight (OPTIONS) - بدون تغییر نسبت به قبل
+    # ⬅️ مدیریت درخواست‌های CORS Preflight (OPTIONS) - این متد باید داخل کلاس باشد
     def do_OPTIONS(self):
         self.send_response(200) 
         self.send_header('Access-Control-Allow-Origin', '*')
