@@ -1,12 +1,12 @@
 // src/pages/LoginPage.jsx
 
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // ⬅️ useNavigate برای هدایت کاربر
-import { useAuth } from '../context/AuthContext'; // ⬅️ useAuth برای مدیریت وضعیت ورود
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const LoginPage = () => {
-  const { login } = useAuth(); // ⬅️ تابع login از Context
-  const navigate = useNavigate(); // ⬅️ قلاب (Hook) برای هدایت کاربر پس از ورود موفق
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -20,7 +20,6 @@ const LoginPage = () => {
     });
   };
 
-  // ⬅️ منطق نهایی برای ارسال داده به API بک‌اند
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -33,20 +32,24 @@ const LoginPage = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(formData), // ارسال داده‌های فرم به بک‌اند
+            body: JSON.stringify(formData), 
         });
 
-        const data = await response.json(); // خواندن پاسخ از بک‌اند
+        const data = await response.json(); 
 
         if (response.status === 200) {
             alert('ورود موفقیت آمیز!');
             
-            // ⬅️ به‌روزرسانی وضعیت سراسری و هدایت به صفحه اصلی
-            login({ userId: data.user_id, email: formData.email }); 
-            navigate('/'); // هدایت به صفحه اصلی
+            // ⬅️ به‌روزرسانی نهایی: ذخیره username دریافتی از API
+            login({ 
+                userId: data.user_id, 
+                email: formData.email,
+                username: data.username // ⬅️ ⬅️ ⬅️ ذخیره نام کاربری برای نمایش در Navbar
+            }); 
+            
+            navigate('/'); 
             
         } else {
-            // نمایش خطای اعتبار سنجی ناموفق
             alert(`خطا در ورود: ${data.message || 'اعتبار سنجی ناموفق'}`);
         }
     } catch (error) {
