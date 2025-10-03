@@ -1,4 +1,4 @@
-/* src/components/Navbar.css - کد نهایی برای چیدمان ریسپانسیو */
+/* src/components/Navbar.css - کد نهایی برای چیدمان RTL و ریسپانسیو */
 
 .navbar {
   background-color: #333; 
@@ -8,16 +8,16 @@
   position: sticky;
   top: 0;
   z-index: 1000; 
-  width: 100%; /* ⬅️ اطمینان از پوشش کامل عرض */
+  width: 100%; 
 }
 
-/* 1. تنظیمات Grid برای Navbar در دسکتاپ (برای جدا کردن لوگو، منو و زبان‌ها) */
+/* 1. تنظیمات چیدمان اصلی (دسکتاپ) - استفاده از فلکس برای انعطاف */
 .navbar .container {
-  display: flex; /* ⬅️ استفاده از فلکس برای انعطاف بیشتر */
-  justify-content: space-between; /* ⬅️ فاصله بین عناصر را پر می‌کند (لوگو چپ، بقیه راست) */
+  display: flex; 
+  justify-content: space-between; /* لوگو چپ، گروه‌ها راست */
   align-items: center;
-  gap: 20px; 
-  max-width: 1200px; /* ⬅️ این باید توسط index.css مدیریت شود، اما در اینجا برای اطمینان قرار داده شده است */
+  gap: 20px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -27,17 +27,18 @@
   color: white;
 }
 
-/* 2. گروه لینک‌ها و سوئیچ زبان (سمت راست در دسکتاپ) */
+/* 2. گروه اصلی لینک‌ها و زبان‌ها (wrapper) */
+/* ⬅️ این گروه در دسکتاپ افقی است */
 .nav-links-wrapper {
   display: flex;
   align-items: center;
-  gap: 20px; /* فاصله بین زبان‌ها و لینک‌های ناوبری */
+  /* ⬅️ فاصله دادن بین لینک‌های ناوبری (منو) و سوئیچ زبان */
+  gap: 20px; 
 }
 
-/* 3. استایل سوئیچ زبان (دکمه‌های زبان) */
+/* 3. استایل سوئیچ زبان */
 .language-switcher {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
   gap: 10px;
 }
@@ -65,10 +66,13 @@
   margin: 0;
   padding: 0;
   display: flex;
+  /* ⬅️rtl: برای سازگاری با فارسی، چینش از راست */
+  flex-direction: row-reverse; 
 }
 
 .nav-links li {
-  margin-left: 20px; 
+  margin-right: 20px; /* ⬅️ استفاده از margin-right برای RTL */
+  margin-left: 0; 
   display: flex;
   align-items: center;
 }
@@ -90,17 +94,18 @@
 
 
 /* ========================================= */
-/* استایل‌های ریسپانسیو (موبایل) */
+/* استایل‌های ریسپانسیو (موبایل) - رفع تداخل و بهبود ظاهر */
 /* ========================================= */
 
 @media (max-width: 768px) {
   /* ⬅️ نمایش منوی همبرگری و مخفی کردن لینک‌ها و زبان‌ها در حالت پیش‌فرض */
   .menu-toggle {
-      display: block; 
+      display: block; /* ⬅️ نمایش در موبایل */
   }
-  
+
+  /* ⬅️ مخفی کردن گروه لینک‌ها و زبان‌ها در حالت عادی موبایل */
   .nav-links-wrapper {
-      display: none; /* ⬅️ مخفی کردن کل لینک‌ها و زبان‌ها در ردیف بالا */
+      display: none; 
       flex-direction: column; 
       width: 100%;
       position: absolute; 
@@ -110,38 +115,40 @@
       background-color: #333; 
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
   }
-
+  
   /* ⬅️ نمایش منو هنگام باز شدن */
   .nav-links-wrapper.mobile-open {
       display: flex; 
-      flex-wrap: wrap; 
+      flex-direction: column;
   }
 
-  /* ⬅️ چینش عمودی زبان‌ها و لینک‌ها در منوی باز شده */
-  .language-switcher,
-  .nav-links {
-      width: 100%; /* ⬅️ گرفتن کل عرض منوی باز شده */
-      justify-content: flex-start;
-      flex-direction: column;
-      align-items: flex-end; /* ⬅️ راست‌چین کردن محتوا */
-      padding: 10px 0;
-  }
-  
+  /* ⬅️ ⬅️ ⬅️ استایل زبان‌ها (جدا و زیبا) */
   .language-switcher {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 10px;
-      margin-bottom: 10px;
+      width: 100%;
+      justify-content: flex-end; /* ⬅️ راست‌چین کردن دکمه‌ها */
+      padding: 10px 20px;
+      border-bottom: 1px solid #555;
+      margin-bottom: 5px;
+  }
+
+  /* ⬅️ لیست اصلی ناوبری در موبایل */
+  .nav-links {
+      display: flex;
+      flex-direction: column; 
+      width: 100%;
+      padding: 0;
   }
   
   .nav-links li {
       width: 100%;
-      margin-left: 0;
-      padding: 8px 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-right: 0;
+      padding: 10px 20px;
+      text-align: right; 
+      border-bottom: 1px solid #555;
   }
-
-  .lang-button {
+  
+  .nav-links a {
       color: white;
-      text-align: right;
+      display: block; /* برای پر کردن عرض لیست */
   }
 }

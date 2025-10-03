@@ -57,7 +57,7 @@ const Navbar = () => {
           {t('nav_home')} 
         </Link>
         
-        {/* ⬅️ 2. سوئیچ زبان (گروه اول در دسکتاپ) */}
+        {/* ⬅️ 2. سوئیچ زبان (فقط در دسکتاپ نمایش داده شود) */}
         <div className="language-switcher"> 
           {languages.map(({ code, label }) => (
             <button
@@ -75,10 +75,10 @@ const Navbar = () => {
           ☰
         </button>
 
-        {/* ⬅️ 4. لینک‌های ناوبری اصلی (گروه دوم) */}
+        {/* ⬅️ ⬅️ ⬅️ 4. لینک‌های ناوبری اصلی (گروه موبایل و دسکتاپ) */}
         <ul className={`nav-links ${isMenuOpen ? 'mobile-open' : ''}`}>
           
-          {/* ⬅️ در موبایل، دکمه‌های زبان را به داخل منوی همبرگری منتقل می‌کنیم */}
+          {/* ⬅️ نمایش سوئیچ زبان در داخل منوی همبرگری (فقط در موبایل) */}
           <li className="language-switcher-mobile">
             {languages.map(({ code, label }) => (
                 <button
