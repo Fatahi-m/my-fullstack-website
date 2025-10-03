@@ -27,6 +27,33 @@ i18n
     interpolation: {
       escapeValue: false, // React از قبل از XSS محافظت می‌کند
     },
-  });
+  
+   // ⬅️ این تابع، جهت (RTL/LTR) را بر اساس زبان تنظیم می‌کند
+   detection: {
+    order: ['querystring', 'cookie', 'localStorage', 'sessionStorage', 'navigator', 'htmlTag'],
+  },
+  
+  // ⬅️ تنظیم زبان‌های RTL
+  detection: {
+    order: ['querystring', 'cookie', 'localStorage', 'sessionStorage', 'navigator', 'htmlTag'],
+  },
+  
+  react: {
+    // ⬅️ افزودن attribute 'dir' به html
+    bindI18n: 'languageChanged',
+    bindStore: false,
+    useSuspense: true,
+    
+    // تابع کمکی برای تعیین جهت متن
+    // 'ckb' و 'kmr' به عنوان RTL (راست‌چین) در نظر گرفته می‌شوند
+    // 'de' و 'en' به عنوان LTR (چپ‌چین) در نظر گرفته می‌شوند
+    setI18n: (i18n, instance) => {
+      const rtlLangs = ['ckb', 'kmr']; // کدهای زبان کردی سورانی و کورمانجی
+      const direction = rtlLangs.includes(instance.language) ? 'rtl' : 'ltr';
+      document.documentElement.setAttribute('dir', direction);
+    }
+  }
+});
+
 
 export default i18n;

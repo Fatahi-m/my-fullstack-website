@@ -26,3 +26,11 @@ a:hover {
     margin: 0 auto;
     padding: 0 20px;
 }
+
+/* src/index.css - FIX: جلوگیری از اسکرول افقی در موبایل */
+
+/* ⬅️ این قانون باعث می‌شود صفحه در هیچ نقطه‌ای عریض‌تر از Viewport نشود */
+body {
+  /* ... کدهای قبلی body ... */
+  overflow-x: hidden; 
+}

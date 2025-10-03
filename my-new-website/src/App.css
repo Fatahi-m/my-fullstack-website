@@ -87,3 +87,31 @@ a:hover {
     text-align: right;
 }
 
+/* src/App.css یا Hero.css */
+
+/* ⬅️ قاعده اصلی: کاهش اندازه فونت‌های بزرگ در صفحه‌های موبایل */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2rem !important; /* ⬅️ کاهش چشمگیر اندازه h1 */
+        line-height: 1.2;
+    }
+
+    .hero p {
+        font-size: 1rem !important; /* ⬅️ کاهش اندازه شعار */
+    }
+    
+    /* ⬅️ این کار از بیرون زدن متن‌های بزرگ از صفحه جلوگیری می‌کند */
+}
+
+/* src/App.css یا Hero.css - قانون نهایی موبایل */
+
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2rem !important; /* ⬅️ کاهش چشمگیر اندازه h1 */
+        line-height: 1.2;
+    }
+
+    .hero p {
+        font-size: 1rem !important; /* ⬅️ کاهش اندازه شعار */
+    }
+}

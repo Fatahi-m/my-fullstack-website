@@ -8,16 +8,16 @@
   position: sticky;
   top: 0;
   z-index: 1000; 
+  width: 100%; /* ⬅️ اطمینان از پوشش کامل عرض */
 }
 
-/* 1. تنظیمات Grid برای Navbar در دسکتاپ */
+/* 1. تنظیمات Grid برای Navbar در دسکتاپ (برای جدا کردن لوگو، منو و زبان‌ها) */
 .navbar .container {
-  /* ⬅️ 4 ستون: لوگو | لینک‌های ناوبری | فضای خالی | دکمه‌های زبان */
-  display: grid;
-  grid-template-columns: auto 1fr auto; 
+  display: flex; /* ⬅️ استفاده از فلکس برای انعطاف بیشتر */
+  justify-content: space-between; /* ⬅️ فاصله بین عناصر را پر می‌کند (لوگو چپ، بقیه راست) */
   align-items: center;
-  gap: 15px; 
-  max-width: 1200px;
+  gap: 20px; 
+  max-width: 1200px; /* ⬅️ این باید توسط index.css مدیریت شود، اما در اینجا برای اطمینان قرار داده شده است */
   margin: 0 auto;
 }
 
@@ -25,29 +25,17 @@
   font-size: 1.5rem;
   font-weight: 700;
   color: white;
-  order: 1; 
 }
 
-/* 2. استایل لینک‌های ناوبری (وسط) */
-.nav-links {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: flex-end; 
-  order: 2; 
-  flex-grow: 1;
-}
-
-.nav-links li {
-  margin-left: 20px; 
+/* 2. گروه لینک‌ها و سوئیچ زبان (سمت راست در دسکتاپ) */
+.nav-links-wrapper {
   display: flex;
   align-items: center;
+  gap: 20px; /* فاصله بین زبان‌ها و لینک‌های ناوبری */
 }
 
-/* 3. استایل سوئیچ زبان (سمت راست) */
+/* 3. استایل سوئیچ زبان (دکمه‌های زبان) */
 .language-switcher {
-  order: 3; 
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -71,7 +59,26 @@
   font-weight: 700;
 }
 
-/* 4. دکمه همبرگری (مخفی به صورت پیش‌فرض) */
+/* 4. استایل لینک‌های ناوبری اصلی */
+.nav-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.nav-links li {
+  margin-left: 20px; 
+  display: flex;
+  align-items: center;
+}
+
+.nav-links a {
+  color: white;
+  font-weight: 500;
+}
+
+/* 5. دکمه همبرگری (مخفی به صورت پیش‌فرض) */
 .menu-toggle {
   display: none; 
   background: none;
@@ -79,7 +86,6 @@
   font-size: 1.5rem;
   cursor: pointer;
   color: white;
-  order: 4; 
 }
 
 
@@ -88,31 +94,13 @@
 /* ========================================= */
 
 @media (max-width: 768px) {
-  .navbar .container {
-      display: flex; 
-      flex-wrap: wrap; 
-      justify-content: space-between;
-      gap: 10px;
-  }
-  
+  /* ⬅️ نمایش منوی همبرگری و مخفی کردن لینک‌ها و زبان‌ها در حالت پیش‌فرض */
   .menu-toggle {
       display: block; 
-      order: 3;
-  }
-
-  /* ⬅️ نمایش دکمه‌های زبان در یک ردیف جداگانه در منوی موبایل */
-  .language-switcher {
-      display: flex; /* ⬅️ نمایش در موبایل */
-      width: 100%;
-      order: 4; /* قرارگیری در ردیف پایین */
-      justify-content: center;
-      padding-top: 10px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
   
-  /* ⬅️ منوهای ناوبری در موبایل */
-  .nav-links {
-      display: none; 
+  .nav-links-wrapper {
+      display: none; /* ⬅️ مخفی کردن کل لینک‌ها و زبان‌ها در ردیف بالا */
       flex-direction: column; 
       width: 100%;
       position: absolute; 
@@ -120,15 +108,40 @@
       left: 0;
       z-index: 999;
       background-color: #333; 
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
   }
 
-  .nav-links li {
-      text-align: right; 
-      margin-left: 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  /* ⬅️ نمایش منو هنگام باز شدن */
+  .nav-links-wrapper.mobile-open {
+      display: flex; 
+      flex-wrap: wrap; 
+  }
+
+  /* ⬅️ چینش عمودی زبان‌ها و لینک‌ها در منوی باز شده */
+  .language-switcher,
+  .nav-links {
+      width: 100%; /* ⬅️ گرفتن کل عرض منوی باز شده */
+      justify-content: flex-start;
+      flex-direction: column;
+      align-items: flex-end; /* ⬅️ راست‌چین کردن محتوا */
+      padding: 10px 0;
   }
   
-  .nav-links.mobile-open {
-      display: flex; 
+  .language-switcher {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+  }
+  
+  .nav-links li {
+      width: 100%;
+      margin-left: 0;
+      padding: 8px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .lang-button {
+      color: white;
+      text-align: right;
   }
 }
