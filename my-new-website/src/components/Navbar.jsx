@@ -1,12 +1,13 @@
 // src/components/Navbar.jsx
 
-import React from 'react';
+// ⬅️ ⬅️ ⬅️ اضافه کردن useState به دستور Import از React
+import React, { useState } from 'react'; 
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'; 
 import './Navbar.css';
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // ⬅️ وضعیت جدید برای باز/بسته کردن منو
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // ⬅️ وضعیت برای باز/بسته کردن منو
   const { isLoggedIn, user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -22,17 +23,16 @@ const Navbar = () => {
         
         // 2. صرف نظر از پاسخ بک‌اند، خروج را در فرانت‌اند انجام می‌دهیم
     } catch (error) {
-        // خطای شبکه را در کنسول ثبت می‌کنیم اما به کاربر نمایش نمی‌دهیم
+        // خطای شبکه را در کنسول ثبت می‌کنیم
         console.error('Logout network error:', error);
     }
     
-    // 3. خروج از Context و هدایت کاربر (مهمترین گام‌ها)
+    // 3. خروج از Context و هدایت کاربر
     logout();
     navigate('/'); 
-    alert('شما با موفقیت از سیستم خارج شدید.'); // ⬅️ فقط یک پیام موفقیت نمایش داده می‌شود
+    alert('شما با موفقیت از سیستم خارج شدید.'); 
   };
 
-  // ⬅️ نمایش نام کاربری (یا ایمیل اگر نام کاربری خالی بود)
   const displayUserName = user ? (user.username || user.email) : 'مهمان';
 
   return (
@@ -41,6 +41,13 @@ const Navbar = () => {
         <Link to="/" className="logo"> 
           وب‌سایت من
         </Link>
+        
+        {/* ⬅️ دکمه همبرگری (فقط در موبایل نمایش داده می‌شود) */}
+        <button className="menu-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          ☰
+        </button>
+
+        {/* ⬅️ افزودن کلاس mobile-open-ness بر اساس وضعیت isMenuOpen */}
         <ul className={`nav-links ${isMenuOpen ? 'mobile-open' : ''}`}>
           <li><Link to="/news">اخبار و رویدادها</Link></li>
           <li><Link to="/directory">دایرکتوری</Link></li>
