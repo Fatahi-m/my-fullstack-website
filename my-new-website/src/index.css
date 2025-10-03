@@ -1,9 +1,9 @@
 /* src/index.css - FINAL CONFIGURATION FOR STYLES */
-
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
 /* 1. استایل‌های عمومی بدنه */
 body {
   margin: 0;
-  font-family: sans-serif;
+  font-family: 'Vazirmatn', sans-serif;
   color: #2c3e50; 
   background-color: #f4f7f6;
 }

@@ -1,33 +1,36 @@
 // src/components/Navbar.jsx
 
-// ⬅️ ⬅️ ⬅️ اضافه کردن useState به دستور Import از React
 import React, { useState } from 'react'; 
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'; 
+import { useTranslation } from 'react-i18next';
 import './Navbar.css';
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // ⬅️ وضعیت برای باز/بسته کردن منو
+  const { t, i18n } = useTranslation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isLoggedIn, user, logout } = useAuth();
   const navigate = useNavigate();
+  
+  // ⬅️ لیست زبان‌های پشتیبانی شده
+  const languages = [
+    { code: 'en', label: 'English' },
+    { code: 'de', label: 'Deutsch' },
+    { code: 'ckb', label: 'کوردی سۆرانی' },
+    { code: 'kmr', label: 'Kurdî Kurmancî' },
+  ];
+
+  // ⬅️ تابع برای تغییر زبان با کلیک بر روی دکمه
+  const changeLanguage = (code) => {
+    i18n.changeLanguage(code);
+    // در حالت موبایل، پس از انتخاب زبان، منو بسته شود
+    if (isMenuOpen) {
+        setIsMenuOpen(false);
+    }
+  };
 
   const handleLogout = async () => { 
-    const API_URL = 'https://my-app-backend-gamma.vercel.app'; 
-
-    try {
-        // 1. ارسال درخواست POST به بک‌اند (برای پاکسازی توکن/سشن)
-        await fetch(`${API_URL}/api/auth/logout`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-        });
-        
-        // 2. صرف نظر از پاسخ بک‌اند، خروج را در فرانت‌اند انجام می‌دهیم
-    } catch (error) {
-        // خطای شبکه را در کنسول ثبت می‌کنیم
-        console.error('Logout network error:', error);
-    }
-    
-    // 3. خروج از Context و هدایت کاربر
+    // ... (منطق خروج بدون نمایش خطای شبکه)
     logout();
     navigate('/'); 
     alert('شما با موفقیت از سیستم خارج شدید.'); 
@@ -38,40 +41,46 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="container">
+        {/* ⬅️ لوگو/عنوان سایت (نیاز به nav_home در translation.json دارد) */}
         <Link to="/" className="logo"> 
-          وب‌سایت من
+          {t('nav_home')} 
         </Link>
+        
+        {/* ⬅️ ⬅️ سوئیچ زبان (گروه اول) */}
+        <div className="language-switcher"> 
+          {languages.map(({ code, label }) => (
+            <button
+              key={code}
+              onClick={() => changeLanguage(code)}
+              className={`lang-button ${i18n.language === code ? 'active' : ''}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
         
         {/* ⬅️ دکمه همبرگری (فقط در موبایل نمایش داده می‌شود) */}
         <button className="menu-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
           ☰
         </button>
 
-        {/* ⬅️ افزودن کلاس mobile-open-ness بر اساس وضعیت isMenuOpen */}
+        {/* ⬅️ لینک‌های اصلی ناوبری و احراز هویت (گروه دوم) */}
         <ul className={`nav-links ${isMenuOpen ? 'mobile-open' : ''}`}>
-          <li><Link to="/news">اخبار و رویدادها</Link></li>
-          <li><Link to="/directory">دایرکتوری</Link></li>
-          <li><Link to="/about">درباره ما</Link></li>
+          
+          <li><Link to="/news">{t('nav_news')}</Link></li> 
+          <li><Link to="/directory">{t('nav_directory')}</Link></li> 
+          <li><Link to="/about">{t('nav_about')}</Link></li> 
 
-          {/* ⬅️ نمایش مشروط بر اساس وضعیت ورود */}
+          {/* ⬅️ احراز هویت */}
           {isLoggedIn ? (
-            <>
-              {/* ⬅️ نمایش مستقیم نام کاربری/ایمیل */}
-              <li style={{fontWeight: 'bold', color: '#007bff'}}>
-                {displayUserName} 
-              </li>
-              <li>
-                {/* ⬅️ دکمه خروج جداگانه */}
-                <button onClick={handleLogout} className="cta-button" 
-                        style={{padding: '5px 10px', fontSize: '0.9rem', backgroundColor: '#c0392b', color: 'white'}}>
-                  خروج
-                </button>
-              </li>
-            </>
+            // ... (منطق خروج) ...
+            <li className="auth-item">
+              <button onClick={handleLogout} className="cta-button" style={{/* ... */}}>خروج</button>
+            </li>
           ) : (
             <>
-              <li><Link to="/login">ورود</Link></li>
-              <li><Link to="/signup">ثبت نام</Link></li>
+              <li classNameauth-item><Link to="/login">ورود</Link></li>
+              <li className="auth-item"><Link to="/signup">ثبت نام</Link></li>
             </>
           )}
         </ul>
