@@ -1,4 +1,4 @@
-// src/pages/Home.jsx
+// src/pages/Home.jsx - نهایی کردن چیدمان برای دسکتاپ
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,9 +7,9 @@ import NewsSection from '../components/NewsSection';
 import DirectorySection from '../components/DirectorySection';
 
 const Home = () => {
- const { t } = useTranslation(); 
+  const { t } = useTranslation(); 
   return (
-    <>
+    <div className="container"> {/* ⬅️ ⬅️ ⬅️ این div برای اعمال max-width ضروری است */}
       <Hero 
           title={t('site_title')} 
           slogan={t('site_slogan')}
@@ -17,7 +17,7 @@ const Home = () => {
       />
       <NewsSection />
       <DirectorySection />
-    </>
+    </div>
   );
 };
 

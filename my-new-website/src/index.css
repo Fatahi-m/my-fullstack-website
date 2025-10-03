@@ -1,10 +1,28 @@
-/* src/index.css - FINAL CONFIGURATION FOR STYLES */
+/* src/index.css - نهایی کردن استایل‌های پایه */
+
 @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
-/* 1. استایل‌های عمومی بدنه */
+
 body {
-  margin: 0;
-  font-family: 'Vazirmatn', sans-serif;
-  color: #2c3e50; 
-  background-color: #f4f7f6;
+    margin: 0;
+    /* ⬅️ اعمال فونت به کل صفحه */
+    font-family: 'Vazirmatn', sans-serif; 
+    color: #2c3e50; 
+    background-color: #f4f7f6;
 }
 
+/* ⬅️ استایل لینک‌ها */
+a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #2980b9;
+}
+
+/* ⬅️ استایل کانتینر مرکزی - حیاتی برای عرض وب‌سایت */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
