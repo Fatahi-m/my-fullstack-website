@@ -1,4 +1,4 @@
-/* src/components/Navbar.css - کد نهایی برای چیدمان RTL و ریسپانسیو */
+/* src/components/Navbar.css - کد نهایی و جامع */
 
 .navbar {
   background-color: #333; 
@@ -8,17 +8,19 @@
   position: sticky;
   top: 0;
   z-index: 1000; 
+  /* ⬅️ اطمینان از عرض کامل: Navbar کل عرض صفحه را می‌گیرد */
   width: 100%; 
 }
 
-/* 1. تنظیمات چیدمان اصلی (دسکتاپ) - استفاده از فلکس برای انعطاف */
+/* 1. تنظیمات چیدمان اصلی (دسکتاپ) */
 .navbar .container {
   display: flex; 
-  justify-content: space-between; /* لوگو چپ، گروه‌ها راست */
+  justify-content: space-between; /* ⬅️ لوگو چپ، گروه‌ها راست */
   align-items: center;
-  gap: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+  gap: 30px;
+  max-width: 1200px; 
+  margin: 0 auto; /* ⬅️ مرکز قرارگیری محتوای داخلی */
+  width: 100%; 
 }
 
 .logo {
@@ -27,13 +29,13 @@
   color: white;
 }
 
-/* 2. گروه اصلی لینک‌ها و زبان‌ها (wrapper) */
-/* ⬅️ این گروه در دسکتاپ افقی است */
+/* 2. گروه اصلی لینک‌ها و زبان‌ها (Wrapper سمت راست) */
 .nav-links-wrapper {
   display: flex;
   align-items: center;
-  /* ⬅️ فاصله دادن بین لینک‌های ناوبری (منو) و سوئیچ زبان */
-  gap: 20px; 
+  /* ⬅️ استفاده از margin-left: auto برای هل دادن گروه به سمت راست (RTL) */
+  margin-left: auto; 
+  gap: 30px; /* فاصله بین گروه‌های زبان و منوی ناوبری */
 }
 
 /* 3. استایل سوئیچ زبان */
@@ -60,19 +62,18 @@
   font-weight: 700;
 }
 
-/* 4. استایل لینک‌های ناوبری اصلی */
+/* 4. استایل لینک‌های ناوبری اصلی (منو) */
 .nav-links {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
-  /* ⬅️rtl: برای سازگاری با فارسی، چینش از راست */
-  flex-direction: row-reverse; 
+  flex-direction: row-reverse; /* ⬅️ RTL: چینش از راست به چپ */
+  gap: 20px; /* فاصله بین آیتم‌های ناوبری */
 }
 
 .nav-links li {
-  margin-right: 20px; /* ⬅️ استفاده از margin-right برای RTL */
-  margin-left: 0; 
+  margin-right: 0; 
   display: flex;
   align-items: center;
 }
@@ -82,7 +83,6 @@
   font-weight: 500;
 }
 
-/* 5. دکمه همبرگری (مخفی به صورت پیش‌فرض) */
 .menu-toggle {
   display: none; 
   background: none;
@@ -94,18 +94,17 @@
 
 
 /* ========================================= */
-/* استایل‌های ریسپانسیو (موبایل) - رفع تداخل و بهبود ظاهر */
+/* استایل‌های ریسپانسیو (موبایل) - رفع نهایی مشکلات */
 /* ========================================= */
 
 @media (max-width: 768px) {
-  /* ⬅️ نمایش منوی همبرگری و مخفی کردن لینک‌ها و زبان‌ها در حالت پیش‌فرض */
+  /* ⬅️ نمایش منوی همبرگری و مخفی کردن لینک‌ها در حالت پیش‌فرض */
   .menu-toggle {
-      display: block; /* ⬅️ نمایش در موبایل */
+      display: block; 
   }
-
-  /* ⬅️ مخفی کردن گروه لینک‌ها و زبان‌ها در حالت عادی موبایل */
+  
   .nav-links-wrapper {
-      display: none; 
+      display: none; /* ⬅️ مخفی کردن گروه اصلی در ردیف بالا */
       flex-direction: column; 
       width: 100%;
       position: absolute; 
@@ -114,41 +113,38 @@
       z-index: 999;
       background-color: #333; 
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
+      margin-left: 0; /* لغو margin-left: auto در موبایل */
   }
-  
-  /* ⬅️ نمایش منو هنگام باز شدن */
+
   .nav-links-wrapper.mobile-open {
-      display: flex; 
-      flex-direction: column;
+      display: flex; /* ⬅️ نمایش در حالت باز شده */
   }
 
-  /* ⬅️ ⬅️ ⬅️ استایل زبان‌ها (جدا و زیبا) */
-  .language-switcher {
-      width: 100%;
-      justify-content: flex-end; /* ⬅️ راست‌چین کردن دکمه‌ها */
-      padding: 10px 20px;
-      border-bottom: 1px solid #555;
-      margin-bottom: 5px;
-  }
-
-  /* ⬅️ لیست اصلی ناوبری در موبایل */
+  /* ⬅️ چینش عمودی زبان‌ها و لینک‌ها در منوی باز شده */
+  .language-switcher,
   .nav-links {
-      display: flex;
-      flex-direction: column; 
-      width: 100%;
+      width: 100%; 
+      flex-direction: column;
+      align-items: flex-end; /* راست‌چین کردن محتوا */
       padding: 0;
   }
   
+  .language-switcher {
+      justify-content: flex-end;
+      padding: 10px 20px;
+      border-bottom: 1px solid #555;
+  }
+  
+  .lang-button {
+      color: white;
+      text-align: right;
+  }
+
   .nav-links li {
       width: 100%;
       margin-right: 0;
       padding: 10px 20px;
       text-align: right; 
       border-bottom: 1px solid #555;
-  }
-  
-  .nav-links a {
-      color: white;
-      display: block; /* برای پر کردن عرض لیست */
   }
 }

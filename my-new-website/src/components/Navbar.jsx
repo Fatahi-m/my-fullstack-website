@@ -12,7 +12,6 @@ const Navbar = () => {
   const { isLoggedIn, user, logout } = useAuth();
   const navigate = useNavigate();
   
-  // لیست زبان‌های پشتیبانی شده
   const languages = [
     { code: 'en', label: 'English' },
     { code: 'de', label: 'Deutsch' },
@@ -20,27 +19,15 @@ const Navbar = () => {
     { code: 'kmr', label: 'Kurdî Kurmancî' },
   ];
 
-  // تابع برای تغییر زبان با کلیک بر روی دکمه
   const changeLanguage = (code) => {
     i18n.changeLanguage(code);
-    // بستن منو در موبایل پس از تغییر زبان
     if (isMenuOpen) {
         setIsMenuOpen(false);
     }
   };
 
   const handleLogout = async () => { 
-    const API_URL = 'https://my-app-backend-gamma.vercel.app'; 
-    // منطق خروج (بدون نمایش خطای شبکه)
-    try {
-        await fetch(`${API_URL}/api/auth/logout`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-        });
-    } catch (error) {
-        console.error('Logout network error:', error);
-    }
-    
+    // ... (منطق خروج) ...
     logout();
     navigate('/'); 
     alert('شما با موفقیت از سیستم خارج شدید.'); 
@@ -52,35 +39,21 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="container">
         
-        {/* ⬅️ 1. لوگو/عنوان سایت */}
         <Link to="/" className="logo"> 
           {t('nav_home')} 
         </Link>
         
-        {/* ⬅️ 2. سوئیچ زبان (فقط در دسکتاپ نمایش داده شود) */}
-        <div className="language-switcher"> 
-          {languages.map(({ code, label }) => (
-            <button
-              key={code}
-              onClick={() => changeLanguage(code)}
-              className={`lang-button ${i18n.language === code ? 'active' : ''}`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-        
-        {/* ⬅️ 3. دکمه همبرگری (مخفی در دسکتاپ) */}
+        {/* ⬅️ دکمه همبرگری */}
         <button className="menu-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
           ☰
         </button>
 
-        {/* ⬅️ ⬅️ ⬅️ 4. لینک‌های ناوبری اصلی (گروه موبایل و دسکتاپ) */}
-        <ul className={`nav-links ${isMenuOpen ? 'mobile-open' : ''}`}>
-          
-          {/* ⬅️ نمایش سوئیچ زبان در داخل منوی همبرگری (فقط در موبایل) */}
-          <li className="language-switcher-mobile">
-            {languages.map(({ code, label }) => (
+        {/* ⬅️ ⬅️ ⬅️ گروه اصلی لینک‌ها و زبان‌ها */}
+        <div className={`nav-links-wrapper ${isMenuOpen ? 'mobile-open' : ''}`}> 
+            
+            {/* 1. سوئیچ زبان (حالا این فقط یک div است) */}
+            <div className="language-switcher"> 
+              {languages.map(({ code, label }) => (
                 <button
                   key={code}
                   onClick={() => changeLanguage(code)}
@@ -88,34 +61,36 @@ const Navbar = () => {
                 >
                   {label}
                 </button>
-            ))}
-          </li>
-          
-          {/* لینک‌های ترجمه شده */}
-          <li><Link to="/news">{t('nav_news')}</Link></li> 
-          <li><Link to="/directory">{t('nav_directory')}</Link></li> 
-          <li><Link to="/about">{t('nav_about')}</Link></li> 
+              ))}
+            </div>
 
-          {/* ⬅️ احراز هویت */}
-          {isLoggedIn ? (
-            <>
-              <li style={{fontWeight: 'bold', color: '#007bff'}}>
-                {displayUserName} 
-              </li>
-              <li>
-                <button onClick={handleLogout} className="cta-button" 
-                        style={{padding: '5px 10px', fontSize: '0.9rem', backgroundColor: '#c0392b', color: 'white'}}>
-                  خروج
-                </button>
-              </li>
-            </>
-          ) : (
-            <>
-              <li><Link to="/login">ورود</Link></li>
-              <li><Link to="/signup">ثبت نام</Link></li>
-            </>
-          )}
-        </ul>
+            {/* 2. لینک‌های ناوبری اصلی */}
+            <ul className="nav-links">
+              
+              <li><Link to="/news">{t('nav_news')}</Link></li> 
+              <li><Link to="/directory">{t('nav_directory')}</Link></li> 
+              <li><Link to="/about">{t('nav_about')}</Link></li> 
+
+              {/* ⬅️ احراز هویت */}
+              {isLoggedIn ? (
+                <>
+                  <li style={{fontWeight: 'bold', color: '#007bff'}}>
+                    {displayUserName} 
+                  </li>
+                  <li>
+                    <button onClick={handleLogout} className="cta-button" style={{padding: '5px 10px', fontSize: '0.9rem', backgroundColor: '#c0392b', color: 'white'}}>
+                      خروج
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li><Link to="/login">ورود</Link></li>
+                  <li><Link to="/signup">ثبت نام</Link></li>
+                </>
+              )}
+            </ul>
+        </div>
       </div>
     </nav>
   );

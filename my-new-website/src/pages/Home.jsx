@@ -1,4 +1,4 @@
-// src/pages/Home.jsx - نهایی کردن چیدمان برای دسکتاپ
+// src/pages/Home.jsx - FINAL FIX
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +9,7 @@ import DirectorySection from '../components/DirectorySection';
 const Home = () => {
   const { t } = useTranslation(); 
   return (
-    <div className="container"> {/* ⬅️ ⬅️ ⬅️ این div برای اعمال max-width ضروری است */}
+    <div className="container" style={{maxWidth: '1200px', margin: '0 auto', padding: '0 20px'}}> {/* ⬅️ ⬅️ اعمال نهایی کانتینر در Home */}
       <Hero 
           title={t('site_title')} 
           slogan={t('site_slogan')}
