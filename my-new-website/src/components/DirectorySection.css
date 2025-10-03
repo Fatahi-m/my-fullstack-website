@@ -84,3 +84,26 @@
   flex: 1;
   direction: rtl;
 }
+
+/* src/components/DirectorySection.css - استایل‌های ریسپانسیو */
+
+@media (max-width: 768px) {
+  .directory-controls {
+      flex-direction: column; /* ⬅️ چینش عمودی در موبایل */
+      gap: 15px;
+      max-width: 100%;
+      padding: 0 10px;
+  }
+
+  .directory-controls input, 
+  .directory-controls select {
+      flex: none; /* ⬅️ لغو تخصیص فضای flex */
+      width: 100%; /* ⬅️ پر کردن کل عرض */
+  }
+
+  /* ⬅️ گرید کسب‌وکارها را برای نمایش بهتر در موبایل به یک ستون تغییر دهید */
+  .business-grid {
+      grid-template-columns: 1fr; /* نمایش یک کارت در هر ردیف */
+      gap: 20px;
+  }
+}

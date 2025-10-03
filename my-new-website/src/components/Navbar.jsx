@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import './Navbar.css';
 
 const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // ⬅️ وضعیت جدید برای باز/بسته کردن منو
   const { isLoggedIn, user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -40,7 +41,7 @@ const Navbar = () => {
         <Link to="/" className="logo"> 
           وب‌سایت من
         </Link>
-        <ul className="nav-links">
+        <ul className={`nav-links ${isMenuOpen ? 'mobile-open' : ''}`}>
           <li><Link to="/news">اخبار و رویدادها</Link></li>
           <li><Link to="/directory">دایرکتوری</Link></li>
           <li><Link to="/about">درباره ما</Link></li>

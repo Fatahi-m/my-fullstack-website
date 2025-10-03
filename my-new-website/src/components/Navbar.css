@@ -48,3 +48,45 @@
     display: flex; /* ⬅️ استفاده از فلکس برای تراز کردن محتوای هر آیتم */
     align-items: center;
   }
+
+  /* 1. پنهان کردن دکمه منو به صورت پیش‌فرض */
+.menu-toggle {
+  display: none; 
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+}
+
+/* 2. استایل‌های موبایل برای صفحه کوچک */
+@media (max-width: 768px) {
+  .navbar .container {
+      flex-wrap: wrap; 
+      justify-content: space-between;
+  }
+
+  /* ⬅️ نمایش دکمه منو */
+  .menu-toggle {
+      display: block; 
+  }
+
+  /* ⬅️ مخفی کردن منو به صورت پیش‌فرض */
+  .nav-links {
+      width: 100%;
+      display: none; 
+      flex-direction: column; /* چینش آیتم‌ها به صورت عمودی */
+      text-align: center;
+      padding: 10px 0;
+      border-top: 1px solid #eee;
+  }
+
+  /* ⬅️ نمایش منو هنگام کلیک */
+  .nav-links.mobile-open {
+      display: flex; 
+  }
+
+  .nav-links li {
+      margin: 10px 0; /* فاصله عمودی بین لینک‌ها */
+  }
+}
