@@ -3,16 +3,16 @@
 import React from 'react';
 import './Hero.css';
 
-const Hero = () => {
+// ⬅️ دریافت متون ترجمه شده به عنوان props
+const Hero = ({ title, slogan, buttonText }) => { 
   return (
     <section className="hero">
       <div className="container">
-        <h1>دایرکتوری و اخبار جامع کسب‌وکارهای ایرانی</h1>
+        <h1>{title}</h1> {/* ⬅️ استفاده از عنوان ترجمه شده */}
         <p>
-          ما بزرگترین دایرکتوری کسب‌وکارها و منبع اخبار معتبر هستیم.
-          کسب‌وکار خود را پیدا یا ثبت کنید و از آخرین رویدادها باخبر شوید.
+          {slogan} {/* ⬅️ استفاده از شعار ترجمه شده */}
         </p>
-        <button className="cta-button">کسب‌وکار خود را ثبت کنید</button>
+        <button className="cta-button">{buttonText}</button> {/* ⬅️ استفاده از متن دکمه ترجمه شده */}
       </div>
     </section>
   );

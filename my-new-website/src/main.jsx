@@ -1,15 +1,22 @@
-// src/main.jsx
+// src/main.jsx - اتصال i18next
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
-import { AuthProvider } from './context/AuthContext'; // ⬅️ وارد کردن AuthProvider
+
+import { I18nextProvider } from 'react-i18next'; // ⬅️ وارد کردن Provider
+import i18n from './i18n'; // ⬅️ وارد کردن فایل پیکربندی
+
+import { AuthProvider } from './context/AuthContext'; 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <AuthProvider> {/* ⬅️ تمام App را در AuthProvider قرار می‌دهیم */}
-      <App />
+    <AuthProvider>
+      {/* ⬅️ I18nextProvider باید در بالاترین سطح قرار گیرد */}
+      <I18nextProvider i18n={i18n}> 
+        <App />
+      </I18nextProvider>
     </AuthProvider>
   </React.StrictMode>,
 );
